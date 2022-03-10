@@ -26,7 +26,7 @@ def str2bool(v):
 def getParameters():
     parser = argparse.ArgumentParser()
     # general
-    parser.add_argument('--mode', type=str, default="train", choices=['train', 'finetune','test','debug'])
+    parser.add_argument('--mode', type=str, default="train", choices=['train', 'finetune','test', 'export','debug'])
     parser.add_argument('--cuda', type=int, default=0)
     parser.add_argument('--dataloader_workers', type=int, default=6)
     parser.add_argument('--checkpoint', type=int, default=278000)
@@ -35,7 +35,7 @@ def getParameters():
     parser.add_argument('--experimentDescription', type=str, default="")
     parser.add_argument('--trainYaml', type=str, default="train_SN_FC_256_conditional_multiscale.yaml")
     # test
-    parser.add_argument('--testScriptsName', type=str, default='common')
+    parser.add_argument('--testScriptName', type=str, default='common')
     parser.add_argument('--nodeName', type=str, default='4card',choices=['localhost', '4card', '8card','lyh','loc','localhost'])
     parser.add_argument('--testBatchSize', type=int, default=1)
     parser.add_argument('--totalImg', type=int, default=20)
@@ -46,6 +46,8 @@ def getParameters():
                                                                     '[0: Berthe Moriso, 1: Edvard Munch, 2: Ernst Ludwig Kirchner, 3: Jackson Pollock, 4: Wassily Kandinsky, \
                                                                     5: Oscar-Claude Monet, 6: Nicholas Roerich, 7: Paul Cézanne, 8: Pablo Picasso, 9 : Samuel Colman, \
                                                                     10: Vincent Willem van Gogh]')
+    # exporting
+    parser.add_argument('--exportScriptName', type=str, default='generator_onnx')
     
     parser.add_argument('--useSpecifiedImg', type=str2bool, default=False)
     parser.add_argument('--specifiedTestImages', nargs='+', help='selected images for validation', 
@@ -177,7 +179,7 @@ Neural Rendering Special Interesting Group of SJTU
         reporter = Reporter(sys_state["reporterPath"])
         sys_state["com_base"]       = "train_logs.%s.scripts."%sys_state["version"]
         
-    elif config.mode == "test":
+    elif config.mode == "test" or config.mode == "export":
         sys_state["version"]        = config.version
         sys_state["logRootPath"]    = env_config["trainLogRoot"]
         sys_state["nodeName"]       = config.nodeName
@@ -245,25 +247,42 @@ Neural Rendering Special Interesting Group of SJTU
                 print("Get the %s file successfully"%("%d_Generator.pth"%sys_state["checkpointStep"]))
             else:
                 print("%s file exists"%("%d_Generator.pth"%sys_state["checkpointStep"]))
-        sys_state["ckp_name"]       = os.path.join(sys_state["projectCheckpoints"], "%d_Generator.pth"%sys_state["checkpointStep"])    
-        # Get the test configurations
-        sys_state["testScriptsName"]= config.testScriptsName
-        sys_state["batchSize"]      = config.testBatchSize
-        sys_state["totalImg"]       = config.totalImg
-        sys_state["saveTestImg"]    = config.saveTestImg
-        sys_state["com_base"]       = "train_logs.%s.scripts."%sys_state["version"]
-        reporter = Reporter(sys_state["reporterPath"])
-        
-        # Display the test information
-        moduleName  = "test_scripts.tester_" + sys_state["testScriptsName"]
-        print("Start to run test script: {}".format(moduleName))
-        print("Test version: %s"%sys_state["version"])
-        print("Test Script Name: %s"%sys_state["testScriptsName"])
-        print("Generator Script Name: %s"%sys_state["gScriptName"])
-        package     = __import__(moduleName, fromlist=True)
-        testerClass = getattr(package, 'Tester')
-        tester      = testerClass(sys_state,reporter)
-        tester.test()
+        sys_state["ckp_name"]       = os.path.join(sys_state["projectCheckpoints"], "%d_Generator.pth"%sys_state["checkpointStep"])
+
+        if config.mode == "test":
+            # Get the test configurations
+            sys_state["testScriptName"]= config.testScriptName
+            sys_state["batchSize"]      = config.testBatchSize
+            sys_state["totalImg"]       = config.totalImg
+            sys_state["saveTestImg"]    = config.saveTestImg
+            sys_state["com_base"]       = "train_logs.%s.scripts."%sys_state["version"]
+            reporter = Reporter(sys_state["reporterPath"])
+            
+            # Display the test information
+            moduleName  = "test_scripts.tester_" + sys_state["testScriptName"]
+            print("Starting to run test script: {}".format(moduleName))
+            print("Test version: %s"%sys_state["version"])
+            print("Test Script Name: %s"%sys_state["testScriptName"])
+            print("Generator Script Name: %s"%sys_state["gScriptName"])
+            package     = __import__(moduleName, fromlist=True)
+            exporterClass = getattr(package, 'Tester')
+            exporter      = exporterClass(sys_state,reporter)
+            exporter.test()
+        elif config.mode == "export":
+            # Get the test configurations
+            sys_state["exportScriptName"]= config.exportScriptName
+            sys_state["batchSize"]      = config.testBatchSize
+            sys_state["com_base"]       = "train_logs.%s.scripts."%sys_state["version"]
+            
+            # Display the test information
+            moduleName  = "export_scripts.export_" + sys_state["exportScriptName"]
+            print("Starting to run export script: {}".format(moduleName))
+            print("Exporter Script Name: %s"%sys_state["exportScriptName"])
+            print("Generator Script Name: %s"%sys_state["gScriptName"])
+            package     = __import__(moduleName, fromlist=True)
+            exporterClass = getattr(package, 'Exporter')
+            exporter      = exporterClass(sys_state)
+            exporter.export()
     
     if config.mode == "train" or config.mode == "finetune":
         # get the dataset path

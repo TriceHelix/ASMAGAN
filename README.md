@@ -3,6 +3,8 @@
 ## Proceedings of the 28th ACM International Conference on Multimedia
 **The official repository with Pytorch**
 
+*This is a modified fork focussed on adding model exporting functionality, specifically to ONNX.*
+
 ## Top News <img width=8% src="./doc/img/new.gif"/>
 
 **`2021-09-25`**: Training related code has been released.
@@ -53,21 +55,21 @@ pip install pyyaml paramiko pandas requests tensorboard tensorboardX tqdm
 ## Usage
 ### To test with pretrained model
 The command line below will generate 1088*1920 HD style migration pictures of 11 painters for each picture of testImgRoot (11 painters include: ***Berthe Moriso*** , ***Edvard Munch***, ***Ernst Ludwig Kirchner***, ***Jackson Pollock***, ***Wassily Kandinsky***, ***Oscar-Claude Monet***, ***Nicholas Roerich***, ***Paul Cézanne***, ***Pablo Picasso*** ,***Samuel Colman***, ***Vincent Willem van Gogh***. The output image(s) can be found in ***./test_logs/ASMAfinal/***
-- Example of style transfer with  ***all 11*** artists style 
+- Example of style transfer with  ***all 11*** artist styles
     ```console
-    python main.py --mode test --cuda 0 --version ASMAfinal  --dataloader_workers 8   --testImgRoot ./bench/ --nodeName localhost --checkpoint 350000 --testScriptsName common_useage --specify_sytle -1 
+    python main.py --mode test --cuda 0 --version ASMAfinal --dataloader_workers 8 --testImgRoot ./bench/ --nodeName localhost --checkpoint 350000 --testScriptName common --specify_sytle -1
     ```
 
 - Example of style transfer with  ***Pablo Picasso*** style 
 
     ```console
-    python main.py --mode test --cuda 0 --version ASMAfinal  --dataloader_workers 8   --testImgRoot ./bench/ --nodeName localhost --checkpoint 350000 --testScriptsName common_useage --specify_sytle 8 
+    python main.py --mode test --cuda 0 --version ASMAfinal --dataloader_workers 8 --testImgRoot ./bench/ --nodeName localhost --checkpoint 350000 --testScriptName common --specify_sytle 8
     ```
 
 - Example of style transfer with  ***Wassily Kandinsky*** style 
 
     ```console
-    python main.py --mode test --cuda 0 --version ASMAfinal  --dataloader_workers 8   --testImgRoot ./bench/ --nodeName localhost --checkpoint 350000 --testScriptsName common_useage --specify_sytle 4
+    python main.py --mode test --cuda 0 --version ASMAfinal --dataloader_workers 8 --testImgRoot ./bench/ --nodeName localhost --checkpoint 350000 --testScriptName common --specify_sytle 4
     ```
 
 --version refers to the ASMAGAN training logs name.
@@ -87,6 +89,14 @@ python main.py --mode train --cuda 0 --dataloader_workers 12 --version $(your ex
 ```
 
 Change the training parameters in ***./train_configs/train.yaml***.
+
+### Exporting
+- Example of exporting trained generator to ONNX with  ***all 11*** artist styles
+    ```console
+    python main.py --mode export --cuda 0 --version ASMAfinal --dataloader_workers 8 --nodeName localhost --checkpoint 350000 --exportScriptName gen_onnx
+    ```
+--exportScriptName refers to the name of the exporting script, excluding the prefix "export_".
+*Note: For now, only the "gen_onnx" export option is available.*
 
 ## To cite our paper
 
