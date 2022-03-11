@@ -48,6 +48,7 @@ def getParameters():
                                                                     10: Vincent Willem van Gogh]')
     # exporting
     parser.add_argument('--exportScriptName', type=str, default='generator_onnx')
+    parser.add_argument('--onnxOpset', type=int, default=9)
     
     parser.add_argument('--useSpecifiedImg', type=str2bool, default=False)
     parser.add_argument('--specifiedTestImages', nargs='+', help='selected images for validation', 
@@ -270,15 +271,17 @@ Neural Rendering Special Interesting Group of SJTU
             exporter.test()
         elif config.mode == "export":
             # Get the test configurations
-            sys_state["exportScriptName"]= config.exportScriptName
-            sys_state["batchSize"]      = config.testBatchSize
-            sys_state["com_base"]       = "train_logs.%s.scripts."%sys_state["version"]
+            sys_state["exportScriptName"] = config.exportScriptName
+            sys_state["onnxOpset"] = config.onnxOpset
+            sys_state["batchSize"] = config.testBatchSize
+            sys_state["com_base"] = "train_logs.%s.scripts."%sys_state["version"]
             
             # Display the test information
             moduleName  = "export_scripts.export_" + sys_state["exportScriptName"]
             print("Starting to run export script: {}".format(moduleName))
             print("Exporter Script Name: %s"%sys_state["exportScriptName"])
             print("Generator Script Name: %s"%sys_state["gScriptName"])
+            print("ONNX opset version: {}".format(sys_state["onnxOpset"]))
             package     = __import__(moduleName, fromlist=True)
             exporterClass = getattr(package, 'Exporter')
             exporter      = exporterClass(sys_state)

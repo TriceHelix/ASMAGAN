@@ -93,10 +93,11 @@ Change the training parameters in ***./train_configs/train.yaml***.
 ### Exporting
 - Example of exporting trained generator to ONNX with  ***all 11*** artist styles
     ```console
-    python main.py --mode export --cuda 0 --version ASMAfinal --dataloader_workers 8 --nodeName localhost --checkpoint 350000 --exportScriptName gen_onnx
+    python main.py --mode export --cuda 0 --version ASMAfinal --dataloader_workers 8 --nodeName localhost --checkpoint 350000 --exportScriptName gen_onnx --onnxOpset 9
     ```
 --exportScriptName refers to the name of the exporting script, excluding the prefix "export_".
 *Note: For now, only the "gen_onnx" export option is available.*
+--onnxOpset refers to the ONNX opset version to export the model to
 
 ## To cite our paper
 

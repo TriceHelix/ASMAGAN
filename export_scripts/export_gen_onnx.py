@@ -50,13 +50,14 @@ class Exporter(object):
 
         dynamic_axes_mapping = {'input_img' : {2 : 'input_img_height', 3 : 'input_img_width'},
                                 'output_img' : {2 : 'output_img_height', 3 : 'output_img_width'}}
+        opset = self.config["onnxOpset"]
 
         # Export the model
         torch.onnx.export(Gen,                                  # model being run
             (dummy_input, condition_labels[0, 0, :]),           # model input
             save_path_gen,                                      # where to save the model
             export_params = True,                               # store the trained parameter weights inside the model file
-            opset_version = 11,                                 # the ONNX version to export the model to
+            opset_version = opset,                                 # the ONNX version to export the model to
             do_constant_folding = True,                         # whether to execute constant folding for optimization
             input_names = ['input_img', 'input_style'],         # the model's input names
             output_names = ['output_img'],                      # the model's output names
