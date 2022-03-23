@@ -226,8 +226,8 @@ Neural Rendering Special Interesting Group of SJTU
                 sys_state[item[0]] = item[1]
         
         # get the dataset path
-        sys_state["content"]= env_config["datasetPath"]["Place365_big"]
-        sys_state["style"]  = env_config["datasetPath"]["WikiArt"]
+        sys_state["content"]= env_config["datasetPath"]["content"]
+        sys_state["style"]  = env_config["datasetPath"]["style"]
             
         # Read scripts from remote machine
         if sys_state["nodeName"]!="localhost":
@@ -289,8 +289,8 @@ Neural Rendering Special Interesting Group of SJTU
     
     if config.mode == "train" or config.mode == "finetune":
         # get the dataset path
-        sys_state["content"]= env_config["datasetPath"]["Place365_big"]
-        sys_state["style"]  = env_config["datasetPath"]["WikiArt"]
+        sys_state["content"]= env_config["datasetPath"]["content"]
+        sys_state["style"]  = env_config["datasetPath"]["style"]
 
         # display the training information
         moduleName  = "train_scripts.trainer_" + sys_state["trainScriptName"]

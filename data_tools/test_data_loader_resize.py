@@ -33,7 +33,7 @@ class TestDataset(data.Dataset):
         self.preprocess()
         self.num_images = len(self.dataset)
         transform       = []
-        transform.append(T.Resize((1088,1920)))
+        #transform.append(T.Resize((1088,1920)))
         transform.append(T.ToTensor())
         transform.append(T.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5)))
         self.transforms = T.Compose(transform)
