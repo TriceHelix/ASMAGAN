@@ -90,6 +90,8 @@ python main.py --mode train --cuda 0 --dataloader_workers 12 --version $(your ex
 
 Change the training parameters in ***./train_configs/train.yaml***.
 
+To resume training from a previous checkpoint, change the --mode parameter from "train" to "finetune" and provide the checkpoint number by assigning the --checkpoint parameter.
+
 ### Exporting (ONNX)
 Example of how to export all artist styles:
 ```console

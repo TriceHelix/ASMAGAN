@@ -4,8 +4,8 @@
         "testLogRoot":"./test_logs",
         "systemLog":"./system/system_log.log",
         "datasetPath":{
-            "content":"/home/ps/Datasets/Wikiart_place365/Place365_large/",
-            "style":"/home/ps/Datasets/Wikiart_place365/Art_Data/data_art_backup/"
+            "content":"<content_path>",
+            "style":"<style_path>"
         },
         "trainConfigPath":"./train_configs",
         "trainScriptsPath":"./train_scripts",

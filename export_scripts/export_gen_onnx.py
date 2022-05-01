@@ -30,7 +30,7 @@ class Exporter(object):
         batch_size  = self.config["batchSize"]
         n_class     = len(self.config["selectedStyleDir"])
 
-        condition_labels = torch.ones((n_class, batch_size, 1)).long()
+        condition_labels = torch.ones((n_class, batch_size, 1)).int()
         for i in range(n_class):
             condition_labels[i,:,:] = condition_labels[i,:,:]*i
 
@@ -44,7 +44,7 @@ class Exporter(object):
 
         print("Exporting Generator as ONNX model...")
 
-        dummy_input = torch.randn(1, 3, 256, 256, requires_grad=True)
+        dummy_input = torch.randn(1, 3, 1024, 1024, requires_grad=True)
         if self.config["cuda"] >=0:
             dummy_input = dummy_input.cuda()
 
@@ -60,8 +60,8 @@ class Exporter(object):
             opset_version = opset,                              # the ONNX version to export the model to
             do_constant_folding = True,                         # whether to execute constant folding for optimization
             input_names = ['input_img', 'input_style'],         # the model's input names
-            output_names = ['output_img'],                      # the model's output names
-            dynamic_axes = dynamic_axes_mapping                 # dynamic input size/shape
+            output_names = ['output_img']                       # the model's output names
+            #dynamic_axes = dynamic_axes_mapping                # dynamic input size/shape
         )
             
         print("Finished exporting Generator!")

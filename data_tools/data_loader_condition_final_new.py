@@ -111,6 +111,11 @@ class TotalDataset(data.Dataset):
         """Return one image and its corresponding attribute label."""
         filename        = self.content_dataset[index]
         image           = Image.open(filename)
+        # convert greyscale to RGB
+        if image.mode != 'RGB':
+            rgbimg = Image.new('RGB', image.size)
+            rgbimg.paste(image)
+            image = rgbimg
         content         = self.content_transform(image)
         art_index       = random.randint(0,self.art_num-1)
         filename,label  = self.art_dataset[art_index]
